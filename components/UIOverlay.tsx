@@ -12,16 +12,16 @@ interface UIOverlayProps {
 
 const statusCopy = {
   booting: {
-    title: 'Calibrating Camera',
-    description: 'Preparing the AR session and locking the tracking pipeline.',
+    title: 'Calibrating',
+    description: 'Hold steady.',
   },
   scanning: {
-    title: 'Searching For Marker',
-    description: 'Hold the target flat in frame and let the tracker settle for a second.',
+    title: 'Find The Marker',
+    description: 'Center it in frame.',
   },
   locked: {
-    title: 'Target Locked',
-    description: 'Move slowly around the marker to inspect the robot from different angles.',
+    title: 'Locked',
+    description: 'Tap the robot.',
   },
 } as const;
 
@@ -39,20 +39,12 @@ export default function UIOverlay({
       <div className="absolute inset-0 z-50 flex items-center justify-center bg-[linear-gradient(180deg,_rgba(2,6,23,0.86),_rgba(2,6,23,0.96))] px-6 backdrop-blur-xl">
         <div className="w-full max-w-2xl rounded-[2rem] border border-cyan-400/20 bg-slate-950/70 p-8 shadow-[0_30px_120px_rgba(14,116,144,0.35)]">
           <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.35em] text-cyan-200">
-            Precision WebAR
+            AR Mode
           </div>
           <h1 className="max-w-xl text-5xl font-semibold tracking-[-0.04em] text-white sm:text-6xl">
             Blueprint Assembler
           </h1>
-          <p className="mt-5 max-w-xl text-base leading-7 text-slate-300 sm:text-lg">
-            A polished image-tracked AR viewer that anchors a robot directly on your marker with a steadier lock,
-            cleaner onboarding, and a more believable presentation.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3 text-sm text-slate-300">
-            <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2">Single target tracking</span>
-            <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2">Stabilized placement</span>
-            <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2">Touch inspection</span>
-          </div>
+          <p className="mt-5 max-w-md text-base leading-7 text-slate-300 sm:text-lg">Scan. Lock. Tap.</p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <button
               onClick={onStart}
@@ -60,7 +52,7 @@ export default function UIOverlay({
             >
               Launch AR
             </button>
-            <p className="text-sm text-slate-400">Best results: bright light, sharp printed marker, minimal glare.</p>
+            <p className="text-sm text-slate-400">Bright light. Sharp marker.</p>
           </div>
         </div>
       </div>
@@ -97,10 +89,8 @@ export default function UIOverlay({
   return (
     <div className="pointer-events-none absolute inset-0 z-40 flex flex-col justify-between p-5 sm:p-6">
       <div className="flex items-start justify-between gap-4">
-        <div className="rounded-[1.4rem] border border-cyan-400/15 bg-slate-950/55 px-5 py-4 backdrop-blur-md">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-cyan-200/80">Blueprint Assembler</p>
-          <h2 className="mt-2 text-xl font-semibold tracking-[-0.03em] text-white">{status.title}</h2>
-          <p className="mt-2 max-w-md text-sm leading-6 text-slate-300">{status.description}</p>
+        <div className="rounded-full border border-cyan-400/15 bg-slate-950/45 px-4 py-3 backdrop-blur-md">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-cyan-100">{status.title}</p>
         </div>
 
         <div className="rounded-full border border-white/10 bg-black/35 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.3em] text-slate-200 backdrop-blur-md">
@@ -119,23 +109,15 @@ export default function UIOverlay({
             <div className="h-28 w-28 rounded-full border border-cyan-200/20 bg-cyan-200/5 shadow-[0_0_60px_rgba(103,232,249,0.2)]" />
             <div className="absolute h-px w-40 animate-pulse bg-gradient-to-r from-transparent via-cyan-200 to-transparent" />
           </div>
+          <p className="mt-4 text-center text-xs font-medium uppercase tracking-[0.32em] text-cyan-100/80">
+            {status.description}
+          </p>
         </div>
       )}
 
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="rounded-[1.4rem] border border-white/10 bg-black/35 px-5 py-4 backdrop-blur-md">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-slate-400">Tracking Notes</p>
-          <p className="mt-2 max-w-md text-sm leading-6 text-slate-200">
-            Keep the marker fully visible, avoid sudden camera movement, and let the lock breathe before tapping the
-            model.
-          </p>
-        </div>
-
-        <div className="rounded-[1.4rem] border border-cyan-400/15 bg-slate-950/45 px-5 py-4 backdrop-blur-md">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-slate-400">Interaction</p>
-          <p className="mt-2 text-sm leading-6 text-slate-200">
-            {isTargetFound ? 'Tap the robot to inspect its systems panel.' : 'Inspection unlocks once the target is found.'}
-          </p>
+      <div className="flex justify-center sm:justify-end">
+        <div className="rounded-full border border-white/10 bg-black/30 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.3em] text-slate-200 backdrop-blur-md">
+          {isTargetFound ? 'Tap To Inspect' : 'Move Slowly'}
         </div>
       </div>
 

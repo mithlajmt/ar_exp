@@ -106,21 +106,31 @@ export default function ARViewer({
                 robot.setAttribute('visible', 'true');
                 robot.removeAttribute('animation__settle');
                 robot.removeAttribute('animation__tilt');
+                robot.removeAttribute('animation__float');
                 robot.setAttribute(
                   'animation__settle',
-                  'property: scale; from: 0.001 0.001 0.001; to: 0.42 0.42 0.42; dur: 420; easing: easeOutCubic',
+                  'property: scale; from: 0.001 0.001 0.001; to: 0.42 0.42 0.42; dur: 360; easing: easeOutBack',
                 );
                 robot.setAttribute(
                   'animation__tilt',
-                  'property: rotation; from: -8 0 0; to: 0 0 0; dur: 420; easing: easeOutCubic',
+                  'property: rotation; from: -14 0 0; to: 0 0 0; dur: 420; easing: easeOutCubic',
+                );
+                robot.setAttribute(
+                  'animation__float',
+                  'property: position; from: 0 -0.12 0.18; to: 0 -0.06 0.1; dur: 420; easing: easeOutCubic',
                 );
               }
 
               if (shell) {
                 shell.removeAttribute('animation__fade');
+                shell.removeAttribute('animation__pulse');
                 shell.setAttribute(
                   'animation__fade',
-                  'property: material.opacity; from: 0; to: 0.24; dur: 320; easing: easeOutQuad',
+                  'property: material.opacity; from: 0; to: 0.38; dur: 240; easing: easeOutQuad',
+                );
+                shell.setAttribute(
+                  'animation__pulse',
+                  'property: scale; from: 0.72 0.72 0.72; to: 1.18 1.18 1.18; dur: 520; easing: easeOutElastic',
                 );
               }
             });
@@ -136,9 +146,10 @@ export default function ARViewer({
 
               if (shell) {
                 shell.removeAttribute('animation__fade');
+                shell.removeAttribute('animation__pulse');
                 shell.setAttribute(
                   'animation__fade',
-                  'property: material.opacity; from: 0.24; to: 0; dur: 180; easing: easeOutQuad',
+                  'property: material.opacity; from: 0.38; to: 0; dur: 180; easing: easeOutQuad',
                 );
               }
             });
@@ -231,6 +242,15 @@ export default function ARViewer({
                 color="#67e8f9"
                 material="shader: flat; transparent: true; opacity: 0"
               ></a-ring>
+
+              <a-plane
+                id="robotGlow"
+                position="0 0 0.02"
+                width="1.35"
+                height="1.35"
+                material="color: #67e8f9; shader: flat; transparent: true; opacity: 0"
+                animation__flash="property: material.opacity; from: 0.34; to: 0; dur: 650; easing: easeOutQuad; startEvents: targetFound"
+              ></a-plane>
 
               <a-gltf-model
                 id="robotModel"
