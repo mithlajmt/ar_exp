@@ -98,6 +98,8 @@ export default function ARViewer({
           init: function init(this: AFrameComponentContext) {
             const robot = document.querySelector<HTMLElement>('#robotModel');
             const shell = document.querySelector<HTMLElement>('#robotShell');
+            const portal = document.querySelector<HTMLElement>('#robotPortal');
+            const glow = document.querySelector<HTMLElement>('#robotGlow');
 
             this.el.addEventListener('targetFound', () => {
               callbacksRef.current.onTargetFound();
@@ -133,6 +135,39 @@ export default function ARViewer({
                   'property: scale; from: 0.72 0.72 0.72; to: 1.18 1.18 1.18; dur: 520; easing: easeOutElastic',
                 );
               }
+
+              if (portal) {
+                portal.setAttribute('visible', 'true');
+                portal.removeAttribute('animation__open');
+                portal.removeAttribute('animation__flash');
+                portal.removeAttribute('animation__spin');
+                portal.setAttribute(
+                  'animation__open',
+                  'property: scale; from: 0.2 0.2 0.2; to: 1.35 1.35 1.35; dur: 560; easing: easeOutCubic',
+                );
+                portal.setAttribute(
+                  'animation__flash',
+                  'property: material.opacity; from: 0.88; to: 0; dur: 620; easing: easeOutQuad',
+                );
+                portal.setAttribute(
+                  'animation__spin',
+                  'property: rotation; from: -90 0 0; to: -90 0 140; dur: 700; easing: easeOutQuad',
+                );
+              }
+
+              if (glow) {
+                glow.setAttribute('visible', 'true');
+                glow.removeAttribute('animation__flash');
+                glow.removeAttribute('animation__burst');
+                glow.setAttribute(
+                  'animation__flash',
+                  'property: material.opacity; from: 0.4; to: 0; dur: 700; easing: easeOutQuad',
+                );
+                glow.setAttribute(
+                  'animation__burst',
+                  'property: scale; from: 0.4 0.4 0.4; to: 1.4 1.4 1.4; dur: 560; easing: easeOutCubic',
+                );
+              }
             });
 
             this.el.addEventListener('targetLost', () => {
@@ -151,6 +186,19 @@ export default function ARViewer({
                   'animation__fade',
                   'property: material.opacity; from: 0.38; to: 0; dur: 180; easing: easeOutQuad',
                 );
+              }
+
+              if (portal) {
+                portal.setAttribute('visible', 'false');
+                portal.removeAttribute('animation__open');
+                portal.removeAttribute('animation__flash');
+                portal.removeAttribute('animation__spin');
+              }
+
+              if (glow) {
+                glow.setAttribute('visible', 'false');
+                glow.removeAttribute('animation__flash');
+                glow.removeAttribute('animation__burst');
               }
             });
           },
@@ -234,6 +282,17 @@ export default function ARViewer({
 
             <a-entity mindar-image-target="targetIndex: 0" target-events>
               <a-ring
+                id="robotPortal"
+                position="0 0 0.03"
+                rotation="-90 0 0"
+                radius-inner="0.18"
+                radius-outer="0.55"
+                color="#a5f3fc"
+                visible="false"
+                material="shader: flat; transparent: true; opacity: 0"
+              ></a-ring>
+
+              <a-ring
                 id="robotShell"
                 position="0 0 0.01"
                 rotation="-90 0 0"
@@ -248,8 +307,8 @@ export default function ARViewer({
                 position="0 0 0.02"
                 width="1.35"
                 height="1.35"
+                visible="false"
                 material="color: #67e8f9; shader: flat; transparent: true; opacity: 0"
-                animation__flash="property: material.opacity; from: 0.34; to: 0; dur: 650; easing: easeOutQuad; startEvents: targetFound"
               ></a-plane>
 
               <a-gltf-model
