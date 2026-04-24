@@ -96,6 +96,7 @@ export default function ARViewer({
       if (!AFRAME.components['target-events']) {
         AFRAME.registerComponent('target-events', {
           init: function init(this: AFrameComponentContext) {
+            const rig = document.querySelector<HTMLElement>('#robotRig');
             const robot = document.querySelector<HTMLElement>('#robotModel');
             const shell = document.querySelector<HTMLElement>('#robotShell');
             const portal = document.querySelector<HTMLElement>('#robotPortal');
@@ -104,11 +105,29 @@ export default function ARViewer({
             this.el.addEventListener('targetFound', () => {
               callbacksRef.current.onTargetFound();
 
+              if (rig) {
+                rig.setAttribute('visible', 'true');
+                rig.setAttribute('position', '0 -0.06 0.1');
+                rig.setAttribute('rotation', '0 -16 0');
+                rig.removeAttribute('animation__patrol');
+                rig.removeAttribute('animation__turn');
+                rig.setAttribute(
+                  'animation__patrol',
+                  'property: position; from: -0.18 -0.06 0.16; to: 0.18 -0.06 -0.02; dur: 2200; delay: 280; dir: alternate; loop: true; easing: easeInOutSine',
+                );
+                rig.setAttribute(
+                  'animation__turn',
+                  'property: rotation; from: 0 -16 0; to: 0 16 0; dur: 2200; delay: 280; dir: alternate; loop: true; easing: easeInOutSine',
+                );
+              }
+
               if (robot) {
                 robot.setAttribute('visible', 'true');
                 robot.removeAttribute('animation__settle');
                 robot.removeAttribute('animation__tilt');
                 robot.removeAttribute('animation__float');
+                robot.removeAttribute('animation__bob');
+                robot.removeAttribute('animation__lean');
                 robot.setAttribute(
                   'animation__settle',
                   'property: scale; from: 0.001 0.001 0.001; to: 0.42 0.42 0.42; dur: 360; easing: easeOutBack',
@@ -119,7 +138,15 @@ export default function ARViewer({
                 );
                 robot.setAttribute(
                   'animation__float',
-                  'property: position; from: 0 -0.12 0.18; to: 0 -0.06 0.1; dur: 420; easing: easeOutCubic',
+                  'property: position; from: 0 -0.08 0.08; to: 0 0 0; dur: 420; easing: easeOutCubic',
+                );
+                robot.setAttribute(
+                  'animation__bob',
+                  'property: position; from: 0 -0.014 0; to: 0 0.018 0; dur: 420; delay: 680; dir: alternate; loop: true; easing: easeInOutSine',
+                );
+                robot.setAttribute(
+                  'animation__lean',
+                  'property: rotation; from: 0 0 -2; to: 0 0 2; dur: 420; delay: 680; dir: alternate; loop: true; easing: easeInOutSine',
                 );
               }
 
@@ -173,10 +200,19 @@ export default function ARViewer({
             this.el.addEventListener('targetLost', () => {
               callbacksRef.current.onTargetLost();
 
+              if (rig) {
+                rig.setAttribute('visible', 'false');
+                rig.removeAttribute('animation__patrol');
+                rig.removeAttribute('animation__turn');
+              }
+
               if (robot) {
                 robot.setAttribute('visible', 'false');
                 robot.removeAttribute('animation__settle');
                 robot.removeAttribute('animation__tilt');
+                robot.removeAttribute('animation__float');
+                robot.removeAttribute('animation__bob');
+                robot.removeAttribute('animation__lean');
               }
 
               if (shell) {
@@ -311,17 +347,19 @@ export default function ARViewer({
                 material="color: #67e8f9; shader: flat; transparent: true; opacity: 0"
               ></a-plane>
 
-              <a-gltf-model
-                id="robotModel"
-                class="clickable"
-                src="#robot"
-                position="0 -0.06 0.1"
-                rotation="0 0 0"
-                scale="0.42 0.42 0.42"
-                visible="false"
-                click-listener
-                robot-finish
-              ></a-gltf-model>
+              <a-entity id="robotRig" position="0 -0.06 0.1" rotation="0 0 0" visible="false">
+                <a-gltf-model
+                  id="robotModel"
+                  class="clickable"
+                  src="#robot"
+                  position="0 0 0"
+                  rotation="0 0 0"
+                  scale="0.42 0.42 0.42"
+                  visible="false"
+                  click-listener
+                  robot-finish
+                ></a-gltf-model>
+              </a-entity>
             </a-entity>
           </a-scene>
         `;
